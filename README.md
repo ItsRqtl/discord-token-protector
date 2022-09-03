@@ -9,8 +9,8 @@ You also need to create a file `.env` under the same directory with your token i
 
 ## Usage
 
-The bot will be active once it joined the server.
-There is only 1 command.
+The bot will be active once it joined the server. It will delete messages with tokens in the text AND attachments.</br>
+There is only 1 command.</br>
 `/language` switch between languages.
 
 ## Hosted Bot
