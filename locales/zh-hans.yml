@@ -1,0 +1,3 @@
+deleted: '此讯息由 {msg.author.mention} 发出，因包含机器人TOKEN而被删除。'
+missing-del: '{msg.author.mention} 发送的讯息包含机器人TOKEN，应该被删除。 (ERR-MISSING-PERMS)'
+langupdated: '机器人的语言已成功更改为简体中文 (CN)'
