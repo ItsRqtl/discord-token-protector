@@ -42,11 +42,14 @@ async def on_guild_delete(guild):
     with open('./locales/settings.json', 'w') as f: json.dump(data, f, indent=4 ,sort_keys=False)   
 
 def locale(key:str, guild_id):
-    with open('./locales/settings.json', 'r') as f: data = json.load(f); lang = data[str(guild_id)]
-    if lang == 0: lang = "en-us"
-    elif lang == 1: lang = "zh-hant"
-    elif lang == 2: lang = "zh-hans"
-    with open(f'./locales/{lang}.yml', 'r', encoding='utf-8') as f: data = yaml.safe_load(f); return data[key]
+    try:
+        with open('./locales/settings.json', 'r') as f: data = json.load(f); lang = data[str(guild_id)]
+    except KeyError: lang = 0
+    finally:
+        if lang == 0: lang = "en-us"
+        elif lang == 1: lang = "zh-hant"
+        elif lang == 2: lang = "zh-hans"
+        with open(f'./locales/{lang}.yml', 'r', encoding='utf-8') as f: data = yaml.safe_load(f); return data[key]
 
 def check_archive():
     try: checkArchive = checkArchive
@@ -206,5 +209,15 @@ async def language(ctx:CommandContext, language:int):
     data[str(ctx.guild_id)] = language
     with open('./locales/settings.json', 'w') as f: json.dump(data, f, indent=4 ,sort_keys=False)
     await ctx.send(eval(f'f"""{locale("langupdated", ctx.guild_id)}"""'), ephemeral=True)
+
+@client.command(
+    name="toggle", name_localizations={Locale.CHINESE_TAIWAN: "切換開關", Locale.CHINESE_CHINA: "切换开关"}, 
+    description="toggle the bot for you", description_localizations={Locale.CHINESE_TAIWAN: "切換機器人的開關", Locale.CHINESE_CHINA: "切换机器人的开关"}
+)
+async def toggle(ctx:CommandContext):
+    with open("./conf.json", "r") as f: data = json.load(f)
+    if int(ctx.author.id) in data["ignored"]: data["ignored"] = data["ignored"].remove(int(ctx.author.id)); await ctx.send(eval(f'f"""{locale("toggledRemoved", ctx.guild_id)}"""'), ephemeral=True)
+    else: data["ignored"] = data["ignored"].append(int(ctx.author.id)); await ctx.send(eval(f'f"""{locale("toggledAdded", ctx.guild_id)}"""'), ephemeral=True)
+    with open("./conf.json", 'w') as f: json.dump(data, f, indent=4 ,sort_keys=False)
 
 client.start()
