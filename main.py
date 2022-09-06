@@ -11,6 +11,7 @@ import zipfile
 import rarfile
 import requests
 from interactions import *
+from interactions.ext.tasks import IntervalTrigger, create_task
 from decouple import config as env
 
 with open("./conf.json", "r") as f: dat = json.load(f); checkArchive = dat["checkArchive"]; checkImage = dat["checkImage"]; checkTextfile = dat["checkTextfile"]; checkFile = dat["checkAttachments"]
@@ -25,7 +26,7 @@ async def new_guild(guild):
 @client.event
 async def on_start(): 
     bot = await client._http.get_self(); print(f'\nLogged in as\n{bot["username"]}#{bot["discriminator"]}\n{bot["id"]}\n')
-    await client.change_presence(ClientPresence(activities=[PresenceActivity(type=PresenceActivityType.WATCHING, name="Leaked Tokens")], status=StatusType.ONLINE))
+    await client.change_presence(ClientPresence(activities=[PresenceActivity(type=PresenceActivityType.GAME, name="Starting...")], status=StatusType.DND))
     dblist = []
     with open('./locales/settings.json', 'r') as f: data = json.load(f)
     for i in data.keys(): dblist.append(i)
@@ -199,4 +200,22 @@ async def toggle(ctx:CommandContext):
     else: data["ignored"].append(int(ctx.user.id)); await ctx.send(eval(f'f"""{locale("toggledRemoved", ctx.guild_id)}"""'), ephemeral=True)
     with open("./conf.json", 'w') as f: json.dump(data, f, indent=4 ,sort_keys=False)
 
+@create_task(IntervalTrigger(30))
+async def updatePresence():
+    global currentPresence
+    if currentPresence == 0:
+        await client.change_presence(ClientPresence(activities=[PresenceActivity(type=PresenceActivityType.WATCHING, name="Leaked Tokens")], status=StatusType.ONLINE))
+        currentPresence = 1
+    elif currentPresence == 1:
+        await client.change_presence(ClientPresence(activities=[PresenceActivity(type=PresenceActivityType.WATCHING, name=f"{len(client.guilds)} Guilds")], status=StatusType.ONLINE))
+        currentPresence = 2
+    else:
+        count = 0
+        for i in client.guilds:
+            count += i.member_count
+        await client.change_presence(ClientPresence(activities=[PresenceActivity(type=PresenceActivityType.WATCHING, name=f"{count} Users")], status=StatusType.ONLINE))
+        currentPresence = 0
+
+currentPresence = 0
+updatePresence.start()
 client.start()
