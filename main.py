@@ -217,8 +217,8 @@ async def language(ctx:CommandContext, language:int):
 )
 async def toggle(ctx:CommandContext):
     with open("./conf.json", "r") as f: data = json.load(f)
-    if int(ctx.author.id) in data["ignored"]: data["ignored"] = data["ignored"].remove(int(ctx.author.id)); await ctx.send(eval(f'f"""{locale("toggledAdded", ctx.guild_id)}"""'), ephemeral=True)
-    else: data["ignored"] = data["ignored"].append(int(ctx.author.id)); await ctx.send(eval(f'f"""{locale("toggledRemoved", ctx.guild_id)}"""'), ephemeral=True)
+    if int(ctx.author.id) in data["ignored"]: data["ignored"].remove(int(ctx.author.id)); await ctx.send(eval(f'f"""{locale("toggledAdded", ctx.guild_id)}"""'), ephemeral=True)
+    else: data["ignored"].append(int(ctx.author.id)); await ctx.send(eval(f'f"""{locale("toggledRemoved", ctx.guild_id)}"""'), ephemeral=True)
     with open("./conf.json", 'w') as f: json.dump(data, f, indent=4 ,sort_keys=False)
 
 client.start()
