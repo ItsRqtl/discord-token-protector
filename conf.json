@@ -1,0 +1,7 @@
+{
+    "checkAttachments": true,
+    "checkTextfile": true,
+    "checkImage": false,
+    "checkArchive": true,
+    "ignored": []
+}
