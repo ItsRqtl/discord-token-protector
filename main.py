@@ -13,6 +13,8 @@ import requests
 from interactions import *
 from decouple import config as env
 
+with open("./conf.json", "r") as f: dat = json.load(f); checkArchive = dat["checkArchive"]; checkImage = dat["checkImage"]; checkTextfile = dat["checkTextfile"]; checkFile = dat["checkAttachments"]
+
 client = Client(token=env("token"), intents = Intents.DEFAULT | Intents.GUILD_MESSAGE_CONTENT)
 
 async def new_guild(guild):
@@ -51,30 +53,6 @@ def locale(key:str, guild_id):
         elif lang == 2: lang = "zh-hans"
         with open(f'./locales/{lang}.yml', 'r', encoding='utf-8') as f: data = yaml.safe_load(f); return data[key]
 
-def check_archive():
-    try: checkArchive = checkArchive
-    except UnboundLocalError:
-        with open("./conf.json", "r") as f: dat = json.load(f); checkArchive = dat["checkArchive"]
-    finally: return checkArchive
-
-def check_image():
-    try: checkImage = checkImage
-    except UnboundLocalError:
-        with open("./conf.json", "r") as f: dat = json.load(f); checkImage = dat["checkImage"]
-    finally: return checkImage
-
-def check_textfile():
-    try: checkTextfile = checkTextfile
-    except UnboundLocalError:
-        with open("./conf.json", "r") as f: dat = json.load(f); checkTextfile = dat["checkTextfile"]
-    finally: return checkTextfile
-
-def check_attachments():
-    try: checkFile = checkFile
-    except UnboundLocalError:
-        with open("./conf.json", "r") as f: dat = json.load(f); checkFile = dat["checkAttachments"]
-    finally: return checkFile
-
 def search(input): return bool(re.search(r"\b[a-zA-Z0-9\-\_]{24,26}\.[a-zA-Z0-9\-\_]{6}\.[a-zA-Z0-9\-\_]{38}", input))
 
 def decoder_search(data): 
@@ -93,6 +71,7 @@ async def delete(msg:Message):
 
 @client.event
 async def on_message_create(msg:Message):
+    #check if not dm
     channel = await msg.get_channel()
     if channel.type != ChannelType.DM:
         #check if user prevent the bot from scanning messages
@@ -101,7 +80,7 @@ async def on_message_create(msg:Message):
         if int(msg.author.id) not in data["ignored"]:
             if search(msg.content) == True: await delete(msg) #message content search
             else: #attachments search
-                if check_attachments() == True:
+                if checkFile == True:
                     if msg.attachments != []:        
                         #guess the type
                         mime = magic.Magic(mime=True)
@@ -111,17 +90,17 @@ async def on_message_create(msg:Message):
                             
                             #text file support
                             if ft.startswith("text"):
-                                if check_textfile() == True:
+                                if checkTextfile == True:
                                     if decoder_search(resp.content) == True: await delete(msg); break
                             
                             #image support (WIP)
                             elif ft.startswith("image"):
-                                if check_image() == True:
+                                if checkImage == True:
                                     pass#
                             
                             #archives support
                             elif ft.startswith("application"):
-                                if check_archive() == True:
+                                if checkArchive == True:
                                     
                                     #zip support
                                     if ft.endswith("/zip"):
