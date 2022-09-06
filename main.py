@@ -199,7 +199,7 @@ async def on_message_create(msg:Message):
         )
     ],
     default_member_permissions=Permissions.MANAGE_GUILD,
-    dm_permission=False, scope=652456645796036619
+    dm_permission=False
 )
 async def language(ctx:CommandContext, language:int):
     with open('./locales/settings.json', 'r') as f: data = json.load(f)
