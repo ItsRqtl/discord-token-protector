@@ -4,7 +4,7 @@ A open source python bot that scan and delete messages with discord token.
 
 ## Installation
 
-You can install all required modules/library by doing `pip install -r requirements.txt`
+You can install all required modules/library by doing `pip install -r requirements-(windows/debian).txt`
 You also need to create a file `.env` under the same directory with your token in it. (`token=INSERT_YOUR_TOKEN`, check `.env.example`)
 
 ## Usage
