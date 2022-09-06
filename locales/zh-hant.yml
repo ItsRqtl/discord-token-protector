@@ -2,4 +2,4 @@ deleted: '此訊息由 {msg.author.mention} 發出，因包含機器人TOKEN而�
 missing-del: '{msg.author.mention} 發送的訊息包含機器人TOKEN，應該被刪除。(ERR-MISSING-PERMS)'
 langupdated: '機器人的語言已成功更改為繁體中文 (TW)'
 toggledRemoved: '已為你停用機器人的掃描功能'
-toggledAdded: '已為你激活機器人的掃描功能'
+toggledAdded: '已為你啟用機器人的掃描功能'
