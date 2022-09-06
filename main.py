@@ -156,7 +156,8 @@ async def on_message_create(msg:Message):
                                                 if decoder_search(tarz.extractfile(i).read()) == True: await delete(msg); break
                                 
                                 #gz support for tar archives and text file
-                                elif ft.endswith("/gzip"):
+                                elif ft.endswith("/gzip") or ft.endswith("/x-gzip"):
+                                    print("is gzip")
                                     try: zdata = gzip.decompress(resp.content)
                                     except: pass
                                     else:
