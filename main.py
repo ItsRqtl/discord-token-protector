@@ -215,9 +215,11 @@ async def language(ctx:CommandContext, language:int):
     description="toggle the bot for you", description_localizations={Locale.CHINESE_TAIWAN: "切換機器人的開關", Locale.CHINESE_CHINA: "切换机器人的开关"}
 )
 async def toggle(ctx:CommandContext):
+    if ctx.channel.type != ChannelType.DM: lang = ctx.guild_id
+    else: lang = 0
     with open("./conf.json", "r") as f: data = json.load(f)
-    if int(ctx.author.id) in data["ignored"]: data["ignored"].remove(int(ctx.author.id)); await ctx.send(eval(f'f"""{locale("toggledAdded", ctx.guild_id)}"""'), ephemeral=True)
-    else: data["ignored"].append(int(ctx.author.id)); await ctx.send(eval(f'f"""{locale("toggledRemoved", ctx.guild_id)}"""'), ephemeral=True)
+    if int(ctx.author.id) in data["ignored"]: data["ignored"].remove(int(ctx.author.id)); await ctx.send(eval(f'f"""{locale("toggledAdded", ctx.lang)}"""'), ephemeral=True)
+    else: data["ignored"].append(int(ctx.author.id)); await ctx.send(eval(f'f"""{locale("toggledRemoved", lang)}"""'), ephemeral=True)
     with open("./conf.json", 'w') as f: json.dump(data, f, indent=4 ,sort_keys=False)
 
 client.start()
