@@ -9,7 +9,7 @@ You also need to create a file `.env` under the same directory with your token i
 
 ## Usage
 
-The bot will be active once it joined the server. It will delete messages with tokens in the text AND attachments.</br>
+The bot will be active once it joined the server. It will scan through the message content, text files and top layer of archives (currently support: 7z, rar, zip with CRC32 encryption).</br>
 There is only 1 command.</br>
 `/language` switch between languages.
 
