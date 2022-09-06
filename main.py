@@ -93,98 +93,100 @@ async def delete(msg:Message):
 
 @client.event
 async def on_message_create(msg:Message):
-    #check if user prevent the bot from scanning messages
-    with open('./conf.json', 'r') as f: 
-        data = json.load(f)
-    if int(msg.author.id) not in data["ignored"]:
-        if search(msg.content) == True: await delete(msg) #message content search
-        else: #attachments search
-            if check_attachments() == True:
-                if msg.attachments != []:        
-                    #guess the type
-                    mime = magic.Magic(mime=True)
-                    for attach in msg.attachments:
-                        resp = requests.get(attach.url)
-                        ft = mime.from_buffer(resp.content)
-                        
-                        #text file support
-                        if ft.startswith("text"):
-                            if check_textfile() == True:
-                                if decoder_search(resp.content) == True: await delete(msg); break
-                        
-                        #image support (WIP)
-                        elif ft.startswith("image"):
-                            if check_image() == True:
-                                pass#
-                        
-                        #archives support
-                        elif ft.startswith("application"):
-                            if check_archive() == True:
-                                
-                                #zip support
-                                if ft.endswith("/zip"):
-                                    try: z = zipfile.ZipFile(io.BytesIO(resp.content))
-                                    except: pass
-                                    else:
-                                        for i in z.namelist():
-                                            if decoder_search(z.read(i)) == True: await delete(msg); break
-                                
-                                #7zip support
-                                elif ft.endswith("/x-7z-compressed"):
-                                    try: z = py7zr.SevenZipFile(io.BytesIO(resp.content)); zdata = z.readall()
-                                    except: pass
-                                    else:
-                                        for i in zdata:
-                                            if decoder_search(zdata[i].read()) == True: await delete(msg); break
-                                
-                                #rar support
-                                elif ft.endswith("/x-rar"):
-                                    try: z = rarfile.RarFile(io.BytesIO(resp.content))
-                                    except: pass
-                                    else:
-                                        for i in z.infolist():
-                                            if decoder_search(z.read(i)) == True: await delete(msg); break
-                                
-                                #tar support
-                                elif ft.endswith("/x-tar"):
-                                    zdata = io.BytesIO(resp.content)
-                                    if tarfile.is_tarfile(zdata):
-                                        try: tarz = tarfile.open(fileobj=zdata)
+    channel = await msg.get_channel()
+    if channel.type != ChannelType.DM:
+        #check if user prevent the bot from scanning messages
+        with open('./conf.json', 'r') as f: 
+            data = json.load(f)
+        if int(msg.author.id) not in data["ignored"]:
+            if search(msg.content) == True: await delete(msg) #message content search
+            else: #attachments search
+                if check_attachments() == True:
+                    if msg.attachments != []:        
+                        #guess the type
+                        mime = magic.Magic(mime=True)
+                        for attach in msg.attachments:
+                            resp = requests.get(attach.url)
+                            ft = mime.from_buffer(resp.content)
+                            
+                            #text file support
+                            if ft.startswith("text"):
+                                if check_textfile() == True:
+                                    if decoder_search(resp.content) == True: await delete(msg); break
+                            
+                            #image support (WIP)
+                            elif ft.startswith("image"):
+                                if check_image() == True:
+                                    pass#
+                            
+                            #archives support
+                            elif ft.startswith("application"):
+                                if check_archive() == True:
+                                    
+                                    #zip support
+                                    if ft.endswith("/zip"):
+                                        try: z = zipfile.ZipFile(io.BytesIO(resp.content))
                                         except: pass
                                         else:
-                                            for i in tarz.getmembers():
-                                                if decoder_search(tarz.extractfile(i).read()) == True: await delete(msg); break
-                                
-                                #gz support for tar archives and text file
-                                elif ft.endswith("/gzip") or ft.endswith("/x-gzip"):
-                                    try: zdata = gzip.decompress(resp.content)
-                                    except: pass
-                                    else:
-                                        if tarfile.is_tarfile(io.BytesIO(zdata)):
-                                            try: tarz = tarfile.open(fileobj=io.BytesIO(zdata))
+                                            for i in z.namelist():
+                                                if decoder_search(z.read(i)) == True: await delete(msg); break
+                                    
+                                    #7zip support
+                                    elif ft.endswith("/x-7z-compressed"):
+                                        try: z = py7zr.SevenZipFile(io.BytesIO(resp.content)); zdata = z.readall()
+                                        except: pass
+                                        else:
+                                            for i in zdata:
+                                                if decoder_search(zdata[i].read()) == True: await delete(msg); break
+                                    
+                                    #rar support
+                                    elif ft.endswith("/x-rar"):
+                                        try: z = rarfile.RarFile(io.BytesIO(resp.content))
+                                        except: pass
+                                        else:
+                                            for i in z.infolist():
+                                                if decoder_search(z.read(i)) == True: await delete(msg); break
+                                    
+                                    #tar support
+                                    elif ft.endswith("/x-tar"):
+                                        zdata = io.BytesIO(resp.content)
+                                        if tarfile.is_tarfile(zdata):
+                                            try: tarz = tarfile.open(fileobj=zdata)
                                             except: pass
                                             else:
                                                 for i in tarz.getmembers():
                                                     if decoder_search(tarz.extractfile(i).read()) == True: await delete(msg); break
+                                    
+                                    #gz support for tar archives and text file
+                                    elif ft.endswith("/gzip") or ft.endswith("/x-gzip"):
+                                        try: zdata = gzip.decompress(resp.content)
+                                        except: pass
                                         else:
-                                            if decoder_search(zdata) == True: await delete(msg); break
-                                
-                                #bz2 support for tar archives and text file
-                                elif ft.endswith("x-bzip2"):
-                                    try: zdata = bz2.decompress(resp.content)
-                                    except: pass
-                                    else:
-                                        if tarfile.is_tarfile(io.BytesIO(zdata)):
-                                            try: tarz = tarfile.open(fileobj=io.BytesIO(zdata))
-                                            except: pass
+                                            if tarfile.is_tarfile(io.BytesIO(zdata)):
+                                                try: tarz = tarfile.open(fileobj=io.BytesIO(zdata))
+                                                except: pass
+                                                else:
+                                                    for i in tarz.getmembers():
+                                                        if decoder_search(tarz.extractfile(i).read()) == True: await delete(msg); break
                                             else:
-                                                for i in tarz.getmembers():
-                                                    if decoder_search(tarz.extractfile(i).read()) == True: await delete(msg); break
+                                                if decoder_search(zdata) == True: await delete(msg); break
+                                    
+                                    #bz2 support for tar archives and text file
+                                    elif ft.endswith("x-bzip2"):
+                                        try: zdata = bz2.decompress(resp.content)
+                                        except: pass
                                         else:
-                                            if decoder_search(zdata) == True: await delete(msg); break
-                                
-                                #other unsupported format
-                                else: pass
+                                            if tarfile.is_tarfile(io.BytesIO(zdata)):
+                                                try: tarz = tarfile.open(fileobj=io.BytesIO(zdata))
+                                                except: pass
+                                                else:
+                                                    for i in tarz.getmembers():
+                                                        if decoder_search(tarz.extractfile(i).read()) == True: await delete(msg); break
+                                            else:
+                                                if decoder_search(zdata) == True: await delete(msg); break
+                                    
+                                    #other unsupported format
+                                    else: pass
 
 @client.command(
     name="language", name_localizations={Locale.CHINESE_TAIWAN: "語言", Locale.CHINESE_CHINA: "语言"}, 
@@ -215,11 +217,9 @@ async def language(ctx:CommandContext, language:int):
     description="toggle the bot for you", description_localizations={Locale.CHINESE_TAIWAN: "切換機器人的開關", Locale.CHINESE_CHINA: "切换机器人的开关"}
 )
 async def toggle(ctx:CommandContext):
-    if ctx.channel is None: lang = 0
-    else: lang = ctx.guild_id
     with open("./conf.json", "r") as f: data = json.load(f)
-    if int(ctx.author.id) in data["ignored"]: data["ignored"].remove(int(ctx.author.id)); await ctx.send(eval(f'f"""{locale("toggledAdded", lang)}"""'), ephemeral=True)
-    else: data["ignored"].append(int(ctx.author.id)); await ctx.send(eval(f'f"""{locale("toggledRemoved", lang)}"""'), ephemeral=True)
+    if int(ctx.user.id) in data["ignored"]: data["ignored"].remove(int(ctx.user.id)); await ctx.send(eval(f'f"""{locale("toggledAdded", ctx.guild_id)}"""'), ephemeral=True)
+    else: data["ignored"].append(int(ctx.user.id)); await ctx.send(eval(f'f"""{locale("toggledRemoved", ctx.guild_id)}"""'), ephemeral=True)
     with open("./conf.json", 'w') as f: json.dump(data, f, indent=4 ,sort_keys=False)
 
 client.start()
