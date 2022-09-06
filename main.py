@@ -218,7 +218,7 @@ async def toggle(ctx:CommandContext):
     if ctx.channel is None: lang = 0
     else: lang = ctx.guild_id
     with open("./conf.json", "r") as f: data = json.load(f)
-    if int(ctx.author.id) in data["ignored"]: data["ignored"].remove(int(ctx.author.id)); await ctx.send(eval(f'f"""{locale("toggledAdded", ctx.lang)}"""'), ephemeral=True)
+    if int(ctx.author.id) in data["ignored"]: data["ignored"].remove(int(ctx.author.id)); await ctx.send(eval(f'f"""{locale("toggledAdded", lang)}"""'), ephemeral=True)
     else: data["ignored"].append(int(ctx.author.id)); await ctx.send(eval(f'f"""{locale("toggledRemoved", lang)}"""'), ephemeral=True)
     with open("./conf.json", 'w') as f: json.dump(data, f, indent=4 ,sort_keys=False)
 
