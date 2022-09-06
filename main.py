@@ -157,7 +157,6 @@ async def on_message_create(msg:Message):
                                 
                                 #gz support for tar archives and text file
                                 elif ft.endswith("/gzip") or ft.endswith("/x-gzip"):
-                                    print("is gzip")
                                     try: zdata = gzip.decompress(resp.content)
                                     except: pass
                                     else:
