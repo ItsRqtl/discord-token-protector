@@ -111,11 +111,11 @@ async def on_message_create(msg:Message):
                                     
                                     #7zip support
                                     elif ft.endswith("/x-7z-compressed"):
-                                        try: z = py7zr.SevenZipFile(io.BytesIO(resp.content)); zdata = z.readall()
+                                        try: z = py7zr.SevenZipFile(io.BytesIO(resp.content))
                                         except: pass
                                         else:
-                                            for i in zdata:
-                                                if decoder_search(zdata[i].read()) == True: await delete(msg); break
+                                            for i in z.getnames():
+                                                if decoder_search(z.read(i)[i].read()) == True: await delete(msg); break
                                     
                                     #rar support
                                     elif ft.endswith("/x-rar"):
