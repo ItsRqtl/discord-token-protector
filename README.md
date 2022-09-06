@@ -22,8 +22,9 @@ Supported format:
 
 ## Commands
 
-There is only 1 command.</br>
+There is only 2 commands.</br>
 `/language` switch between languages.
+`/toggle` toggle the bot's scanning function for a single user.
 
 ## Hosted Bot
 
