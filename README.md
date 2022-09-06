@@ -9,7 +9,19 @@ You also need to create a file `.env` under the same directory with your token i
 
 ## Usage
 
-The bot will be active once it joined the server. It will scan through the message content, text files and top layer of archives (currently support: 7z, rar, zip with CRC32 encryption).</br>
+The bot will be active once it joined the server. It will scan through the message content, text files and top layer of archives.</br>
+Supported format:
+
+- text files
+- zip (with CRC32 encryption)
+- 7zip
+- rar
+- tar
+- gzip (tar compression/text file)
+- bzip2 (tar compression/text file)
+
+## Commands
+
 There is only 1 command.</br>
 `/language` switch between languages.
 
