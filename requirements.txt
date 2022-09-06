@@ -1,3 +1,8 @@
 discord-py-interactions==4.3.1
 python-decouple
 pyyaml
+py7zr
+rarfile
+requests
+python-magic-bin
+python-magic-debian-bin
