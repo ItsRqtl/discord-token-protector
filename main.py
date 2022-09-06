@@ -215,7 +215,7 @@ async def language(ctx:CommandContext, language:int):
     description="toggle the bot for you", description_localizations={Locale.CHINESE_TAIWAN: "切換機器人的開關", Locale.CHINESE_CHINA: "切换机器人的开关"}
 )
 async def toggle(ctx:CommandContext):
-    if ctx.channel.type is None: lang = 0
+    if ctx.channel is None: lang = 0
     else: lang = ctx.guild_id
     with open("./conf.json", "r") as f: data = json.load(f)
     if int(ctx.author.id) in data["ignored"]: data["ignored"].remove(int(ctx.author.id)); await ctx.send(eval(f'f"""{locale("toggledAdded", ctx.lang)}"""'), ephemeral=True)
