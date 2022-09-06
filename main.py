@@ -101,7 +101,6 @@ async def on_message_create(msg:Message):
                             #archives support
                             elif ft.startswith("application"):
                                 if checkArchive == True:
-                                    
                                     #zip support
                                     if ft.endswith("/zip"):
                                         try: z = zipfile.ZipFile(io.BytesIO(resp.content))
@@ -128,9 +127,8 @@ async def on_message_create(msg:Message):
                                     
                                     #tar support
                                     elif ft.endswith("/x-tar"):
-                                        zdata = io.BytesIO(resp.content)
-                                        if tarfile.is_tarfile(zdata):
-                                            try: tarz = tarfile.open(fileobj=zdata)
+                                        if tarfile.is_tarfile(io.BytesIO(resp.content)):
+                                            try: tarz = tarfile.open(fileobj=io.BytesIO(resp.content))
                                             except: pass
                                             else:
                                                 for i in tarz.getmembers():
