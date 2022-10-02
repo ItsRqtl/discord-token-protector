@@ -28,7 +28,7 @@ There is only 2 commands.</br>
 
 ## Hosted Bot
 
-This bot is also hosted by me. You can invite it [here](https://discord.com/api/oauth2/authorize?client_id=1015401626632212560&permissions=11264&scope=bot).
+This bot is also hosted by me. You can invite it [here](https://github.com/ItsRqtl/TokenProtector/) (currently unavailable).
 
 ## License
 
