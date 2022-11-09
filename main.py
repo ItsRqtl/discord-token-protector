@@ -48,11 +48,9 @@ async def on_start():
             status=StatusType.ONLINE,
         )
     )
-    dblist = []
     with open("./locales/settings.json", "r") as f:
         data = json.load(f)
-    for i in data.keys():
-        dblist.append(i)
+    dblist = list(data.keys())
     for g in client.guilds:
         if str(g.id) not in dblist:
             await new_guild(g)
@@ -121,8 +119,6 @@ async def delete(msg: Message):
         await msg.delete()
     elif Permissions.SEND_MESSAGES in perms:
         await msg.reply(eval(f'f"""{locale("missing-del", msg.guild_id)}"""'))
-    else:
-        pass
 
 
 @client.event
@@ -136,160 +132,151 @@ async def on_message_create(msg: Message):
         if int(msg.author.id) not in data["ignored"]:
             if search(msg.content) == True:
                 await delete(msg)  # message content search
-            else:  # attachments search
-                if checkFile == True:
-                    if msg.attachments != []:
-                        # guess the type
-                        mime = magic.Magic(mime=True)
-                        for attach in msg.attachments:
-                            resp = requests.get(attach.url)
-                            ft = mime.from_buffer(resp.content)
+            elif checkFile == True and msg.attachments != []:
+                # guess the type
+                mime = magic.Magic(mime=True)
+                for attach in msg.attachments:
+                    resp = requests.get(attach.url)
+                    ft = mime.from_buffer(resp.content)
 
                             # text file support
-                            if ft.startswith("text"):
-                                if checkTextfile == True:
-                                    if decoder_search(resp.content) == True:
-                                        await delete(msg)
-                                        break
+                    if ft.startswith("text"):
+                        if (
+                            checkTextfile == True
+                            and decoder_search(resp.content) == True
+                        ):
+                            await delete(msg)
+                            break
 
-                            # image support (WIP)
-                            elif ft.startswith("image"):
-                                if checkImage == True:
-                                    pass  #
-
-                            # archives support
-                            elif ft.startswith("application"):
-                                if checkArchive == True:
+                    elif ft.startswith("image"):
+                        pass
+                    elif ft.startswith("application"):
                                     # zip support
-                                    if ft.endswith("/zip"):
-                                        try:
-                                            z = zipfile.ZipFile(
-                                                io.BytesIO(resp.content)
-                                            )
-                                        except:
-                                            pass
-                                        else:
-                                            for i in z.namelist():
-                                                if decoder_search(z.read(i)) == True:
-                                                    await delete(msg)
-                                                    break
+                        if ft.endswith("/zip"):
+                            if checkArchive == True:
+                                try:
+                                    z = zipfile.ZipFile(
+                                        io.BytesIO(resp.content)
+                                    )
+                                except:
+                                    pass
+                                else:
+                                    for i in z.namelist():
+                                        if decoder_search(z.read(i)) == True:
+                                            await delete(msg)
+                                            break
 
-                                    # 7zip support
-                                    elif ft.endswith("/x-7z-compressed"):
+                        elif ft.endswith("/x-7z-compressed"):
+                            if checkArchive == True:
+                                try:
+                                    z = py7zr.SevenZipFile(
+                                        io.BytesIO(resp.content)
+                                    )
+                                except:
+                                    pass
+                                else:
+                                    for i in z.getnames():
+                                        if (
+                                            decoder_search(z.read(i)[i].read())
+                                            == True
+                                        ):
+                                            await delete(msg)
+                                            break
+
+                        elif ft.endswith("/x-rar"):
+                            if checkArchive == True:
+                                try:
+                                    z = rarfile.RarFile(
+                                        io.BytesIO(resp.content)
+                                    )
+                                except:
+                                    pass
+                                else:
+                                    for i in z.infolist():
+                                        if decoder_search(z.read(i)) == True:
+                                            await delete(msg)
+                                            break
+
+                        elif ft.endswith("/x-tar"):
+                            if checkArchive == True and tarfile.is_tarfile(
+                                io.BytesIO(resp.content)
+                            ):
+                                try:
+                                    tarz = tarfile.open(
+                                        fileobj=io.BytesIO(resp.content)
+                                    )
+                                except:
+                                    pass
+                                else:
+                                    for i in tarz.getmembers():
+                                        if (
+                                            decoder_search(
+                                                tarz.extractfile(i).read()
+                                            )
+                                            == True
+                                        ):
+                                            await delete(msg)
+                                            break
+
+                        elif ft.endswith("/gzip") or ft.endswith("/x-gzip"):
+                            if checkArchive == True:
+                                try:
+                                    zdata = gzip.decompress(resp.content)
+                                except:
+                                    pass
+                                else:
+                                    if tarfile.is_tarfile(io.BytesIO(zdata)):
                                         try:
-                                            z = py7zr.SevenZipFile(
-                                                io.BytesIO(resp.content)
+                                            tarz = tarfile.open(
+                                                fileobj=io.BytesIO(zdata)
                                             )
                                         except:
                                             pass
                                         else:
-                                            for i in z.getnames():
+                                            for i in tarz.getmembers():
                                                 if (
-                                                    decoder_search(z.read(i)[i].read())
+                                                    decoder_search(
+                                                        tarz.extractfile(
+                                                            i
+                                                        ).read()
+                                                    )
                                                     == True
                                                 ):
                                                     await delete(msg)
                                                     break
+                                    elif decoder_search(zdata) == True:
+                                        await delete(msg)
+                                        break
 
-                                    # rar support
-                                    elif ft.endswith("/x-rar"):
+                        elif ft.endswith("x-bzip2"):
+                            if checkArchive == True:
+                                try:
+                                    zdata = bz2.decompress(resp.content)
+                                except:
+                                    pass
+                                else:
+                                    if tarfile.is_tarfile(io.BytesIO(zdata)):
                                         try:
-                                            z = rarfile.RarFile(
-                                                io.BytesIO(resp.content)
+                                            tarz = tarfile.open(
+                                                fileobj=io.BytesIO(zdata)
                                             )
                                         except:
                                             pass
                                         else:
-                                            for i in z.infolist():
-                                                if decoder_search(z.read(i)) == True:
-                                                    await delete(msg)
-                                                    break
-
-                                    # tar support
-                                    elif ft.endswith("/x-tar"):
-                                        if tarfile.is_tarfile(io.BytesIO(resp.content)):
-                                            try:
-                                                tarz = tarfile.open(
-                                                    fileobj=io.BytesIO(resp.content)
-                                                )
-                                            except:
-                                                pass
-                                            else:
-                                                for i in tarz.getmembers():
-                                                    if (
-                                                        decoder_search(
-                                                            tarz.extractfile(i).read()
-                                                        )
-                                                        == True
-                                                    ):
-                                                        await delete(msg)
-                                                        break
-
-                                    # gz support for tar archives and text file
-                                    elif ft.endswith("/gzip") or ft.endswith("/x-gzip"):
-                                        try:
-                                            zdata = gzip.decompress(resp.content)
-                                        except:
-                                            pass
-                                        else:
-                                            if tarfile.is_tarfile(io.BytesIO(zdata)):
-                                                try:
-                                                    tarz = tarfile.open(
-                                                        fileobj=io.BytesIO(zdata)
+                                            for i in tarz.getmembers():
+                                                if (
+                                                    decoder_search(
+                                                        tarz.extractfile(
+                                                            i
+                                                        ).read()
                                                     )
-                                                except:
-                                                    pass
-                                                else:
-                                                    for i in tarz.getmembers():
-                                                        if (
-                                                            decoder_search(
-                                                                tarz.extractfile(
-                                                                    i
-                                                                ).read()
-                                                            )
-                                                            == True
-                                                        ):
-                                                            await delete(msg)
-                                                            break
-                                            else:
-                                                if decoder_search(zdata) == True:
+                                                    == True
+                                                ):
                                                     await delete(msg)
                                                     break
-
-                                    # bz2 support for tar archives and text file
-                                    elif ft.endswith("x-bzip2"):
-                                        try:
-                                            zdata = bz2.decompress(resp.content)
-                                        except:
-                                            pass
-                                        else:
-                                            if tarfile.is_tarfile(io.BytesIO(zdata)):
-                                                try:
-                                                    tarz = tarfile.open(
-                                                        fileobj=io.BytesIO(zdata)
-                                                    )
-                                                except:
-                                                    pass
-                                                else:
-                                                    for i in tarz.getmembers():
-                                                        if (
-                                                            decoder_search(
-                                                                tarz.extractfile(
-                                                                    i
-                                                                ).read()
-                                                            )
-                                                            == True
-                                                        ):
-                                                            await delete(msg)
-                                                            break
-                                            else:
-                                                if decoder_search(zdata) == True:
-                                                    await delete(msg)
-                                                    break
-
-                                    # other unsupported format
-                                    else:
-                                        pass
+                                    elif decoder_search(zdata) == True:
+                                        await delete(msg)
+                                        break
 
 
 @client.command(
