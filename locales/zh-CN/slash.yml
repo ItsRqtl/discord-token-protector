@@ -1,9 +1,9 @@
 opt-out:
   name: "opt-out"
-  description: "选择退出 Discord TOKEN 保护。"
+  description: "选择退出 Discord token 保护。"
   success:
-    "True": "已为你停用机器人的 Discord TOKEN 扫描保护功能。重新执行此指令以再次啟用。"
-    "False": "已为你啟用机器人的 Discord TOKEN 扫描保护功能。重新执行此指令以停用。"
+    "True": "已为你停用机器人的 Discord token 扫描保护功能。重新执行此指令以再次啟用。"
+    "False": "已为你啟用机器人的 Discord token 扫描保护功能。重新执行此指令以停用。"
 
 language:
   name: "language"

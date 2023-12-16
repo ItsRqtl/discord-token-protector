@@ -1,3 +1,3 @@
 protection:
-  deleted: "此訊息由 {author} 發出，因包含機器人TOKEN而被刪除。"
-  missing-perms: "{author} 發送的訊息包含機器人TOKEN，應該被刪除。(缺少權限)"
+  deleted: "此訊息由 {author} 發出，因包含 Discord token 而被刪除。\n請儘快重置您的 token。"
+  missing-perms: "{author} 發送的訊息包含機器人 Discord token，應該被刪除。(缺少權限)\n請儘快重置您的 token。"

@@ -1,9 +1,9 @@
 opt-out:
   name: "opt-out"
-  description: "Opt out of Discord TOKEN protection."
+  description: "Opt out of Discord token protection."
   success:
-    "True": "Successfully opted out of Discord TOKEN protection. Re-run this command to opt back in."
-    "False": "Successfully opted in to Discord TOKEN protection. Re-run this command to opt out."
+    "True": "Successfully opted out of Discord token protection. Re-run this command to opt back in."
+    "False": "Successfully opted in to Discord token protection. Re-run this command to opt out."
 
 language:
   name: "language"

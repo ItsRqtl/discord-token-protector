@@ -1,3 +1,3 @@
 protection:
-  deleted: "This message is original sent by {author}, which contains a Discord TOKEN and has been removed."
-  missing-perms: "This message sent by {author} contains a Discord TOKEN and should be removed. (Missing Permissions)"
+  deleted: "This message is original sent by {author}, which contains a Discord token and has been removed.\nPlease reset your token as soon as possible."
+  missing-perms: "This message sent by {author} contains a Discord token and should be removed. (Missing Permissions)\nPlease reset your token as soon as possible."
