@@ -1,0 +1,3 @@
+protection:
+  deleted: "此消息由 {author} 发出，因包含机器人TOKEN而被删除。"
+  missing-perms: "{author} 发送的消息包含机器人TOKEN，应该被删除。(缺少权限)"

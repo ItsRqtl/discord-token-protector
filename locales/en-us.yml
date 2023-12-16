@@ -1,5 +1,0 @@
-deleted: 'This message is original sent by {msg.author.mention}, which contains a discord token and has been removed.'
-missing-del: 'This message sent by {msg.author.mention} contains a discord token and should be removed. (ERR-MISSING-PERMS)'
-langupdated: "Bot's language has successfully changed to English (US)"
-toggledRemoved: "The bot's scannning fuction has been deactivated for you"
-toggledAdded: "The bot's scannning fuction has been activated for you"

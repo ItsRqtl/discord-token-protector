@@ -1,0 +1,14 @@
+[bot]
+    debug-mode = false
+    owners = [] # list of user IDs
+
+[log]
+    format = "<green>{time:YYYY-MM-DD HH:mm:ss.SSS}</green> | <level>{level: <8}</level> | <level>{message}</level>"
+
+[database]
+    path = "storage/database.db"
+
+[features]
+    check-attachments = true # enable attachment check, up to 25MiB, ignore the options below if false
+    check-textfile = true # enable textfile scanning, ignore the options below if false
+    check-archive = true # enable archive scanning, will scan the top level files in the archive, up to 25 files

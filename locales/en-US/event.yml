@@ -1,0 +1,3 @@
+protection:
+  deleted: "This message is original sent by {author}, which contains a Discord TOKEN and has been removed."
+  missing-perms: "This message sent by {author} contains a Discord TOKEN and should be removed. (Missing Permissions)"

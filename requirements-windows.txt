@@ -1,9 +1,0 @@
-discord-py-interactions==4.3.1
-interactions-tasks
-python-decouple
-pyyaml
-py7zr
-rarfile
-requests
-python-magic
-python-magic-bin
