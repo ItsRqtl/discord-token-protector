@@ -18,7 +18,7 @@ It will scan through the message content and attachments (less than 25MiB), incl
 Supported format:
 
 - plain text files
-- zip (with CRC32 encryption)
+- zip
 - 7zip
 - rar
 - tar
