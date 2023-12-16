@@ -30,13 +30,16 @@ class Protection(BaseCog):
         :param locale: The locale for the warning message.
         :type locale: str
         """
+        func = (
+            message.reply
+            if message.channel.permissions_for(message.guild.me).read_message_history
+            else message.channel.send
+        )
         if message.channel.permissions_for(message.guild.me).manage_messages:
-            await message.reply(
-                I18n.get("event.protection.deleted", locale, author=message.author.mention)
-            )
+            await func(I18n.get("event.protection.deleted", locale, author=message.author.mention))
             await message.delete()
         else:
-            await message.channel.send(
+            await func(
                 I18n.get("event.protection.missing-perms", locale, author=message.author.mention)
             )
 
@@ -51,10 +54,16 @@ class Protection(BaseCog):
         if (
             message.author.bot  # ignore bots
             or not message.guild  # ignore DMs
-            or not message.channel.permissions_for(
-                message.guild.me
-            ).send_messages  # skip if the bot can't send warnings anyways
             or not (message.content or message.attachments)  # skip if there's no content to check
+        ):
+            return
+
+        if (
+            message.channel.parent
+            and not message.channel.permissions_for(message.guild.me).send_messages_in_threads
+        ) or (
+            not message.channel.parent
+            and not message.channel.permissions_for(message.guild.me).send_messages
         ):
             return
 
