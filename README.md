@@ -33,7 +33,7 @@ There is only 2 commands.
 
 ## Hosted Bot
 
-This bot is also hosted by me. You can invite it [here](https://github.com/ItsRqtl/TokenProtector/) (available soon).
+This bot is also hosted by me. You can invite it [here](https://ptb.discord.com/api/oauth2/authorize?client_id=1015401626632212560&permissions=274877983744&scope=bot).
 
 ## License
 
