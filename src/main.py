@@ -48,7 +48,7 @@ class Bot(discord.AutoShardedBot):
         The event that is triggered when the bot is started.
         """
         await self.database.initialize()
-        await self.update_presence.start()
+        self.update_presence.start()
         self.logger.info(
             f"""
 -------------------------
