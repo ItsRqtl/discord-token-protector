@@ -58,12 +58,13 @@ class Protection(BaseCog):
         ):
             return
 
+        is_thread = hasattr(message.channel, "parent") and message.channel.parent
+
         if (
-            message.channel.parent
+            is_thread
             and not message.channel.permissions_for(message.guild.me).send_messages_in_threads
         ) or (
-            not message.channel.parent
-            and not message.channel.permissions_for(message.guild.me).send_messages
+            not is_thread and not message.channel.permissions_for(message.guild.me).send_messages
         ):
             return
 
