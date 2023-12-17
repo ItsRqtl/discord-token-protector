@@ -17,6 +17,7 @@ class Protection(BaseCog):
     def __init__(self, bot: Bot) -> None:
         super().__init__(bot)
         self._features = self.config["features"]
+        self.validate_userid = self._features["validate-userid"]
         self.check_attachments = self._features["check-attachments"]
         self.check_textfile = self._features["check-textfile"]
         self.check_archive = self._features["check-archive"]
@@ -74,13 +75,15 @@ class Protection(BaseCog):
 
         locale = user["language"] if user else message.guild.preferred_locale or "en-US"
 
-        if message.content and TokenDetector.detect(message.content):
+        client = self.bot if self.validate_userid else None
+
+        if message.content and TokenDetector.detect(message.content, client):
             return await self.delete_message(message, locale)
 
         if self.check_attachments:
             for i in message.attachments:
                 if await TokenDetector.scan_attachment(
-                    i, self.check_textfile, self.check_archive, self.bot
+                    i, self.check_textfile, self.check_archive, client
                 ):
                     return await self.delete_message(message, locale)
 

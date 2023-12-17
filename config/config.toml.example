@@ -9,6 +9,7 @@
     path = "storage/database.db"
 
 [features]
+    validate-userid = true # validate user IDs in token before deleting, more accurate but slower
     check-attachments = true # enable attachment check, up to 25MiB, ignore the options below if false
     check-textfile = true # enable textfile scanning, ignore the options below if false
     check-archive = true # enable archive scanning, will scan the top level files in the archive, up to 25 files
