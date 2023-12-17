@@ -79,7 +79,9 @@ class Protection(BaseCog):
 
         if self.check_attachments:
             for i in message.attachments:
-                if await TokenDetector.scan_attachment(i, self.check_textfile, self.check_archive):
+                if await TokenDetector.scan_attachment(
+                    i, self.check_textfile, self.check_archive, self.bot
+                ):
                     return await self.delete_message(message, locale)
 
 

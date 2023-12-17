@@ -20,8 +20,8 @@ from src.utils.token_detection import TokenDetector
         ("short.tok.en", False),
     ],
 )
-def test_validate(token, expected):
-    result = TokenDetector.validate(token)
+async def test_validate(token, expected):
+    result = await TokenDetector.validate(token)
     assert result == expected
 
 
@@ -44,8 +44,8 @@ def test_validate(token, expected):
         ("", False),
     ],
 )
-def test_detect(content, expected):
-    result = TokenDetector.detect(content)
+async def test_detect(content, expected):
+    result = await TokenDetector.detect(content)
     assert result == expected
 
 
@@ -60,8 +60,8 @@ def test_detect(content, expected):
         (b"", False),
     ],
 )
-def test_decoder_search(data, expected):
-    result = TokenDetector.decoder_search(data)
+async def test_decoder_search(data, expected):
+    result = await TokenDetector.decoder_search(data)
     assert result == expected
 
 
@@ -72,8 +72,8 @@ def test_decoder_search(data, expected):
         (open("tests/assets/plain/danger.txt", "rb").read(), True),
     ],
 )
-def test_plain_text_decoder_search(buffer, expected):
-    result = TokenDetector.decoder_search(buffer)
+async def test_plain_text_decoder_search(buffer, expected):
+    result = await TokenDetector.decoder_search(buffer)
     assert result == expected
 
 
@@ -84,8 +84,8 @@ def test_plain_text_decoder_search(buffer, expected):
         (io.BytesIO(open("tests/assets/7zip/danger.7z", "rb").read()), True),
     ],
 )
-def test_scan_7z(file_obj, expected):
-    result = TokenDetector.scan_7z(file_obj)
+async def test_scan_7z(file_obj, expected):
+    result = await TokenDetector.scan_7z(file_obj)
     assert result == expected
 
 
@@ -96,8 +96,8 @@ def test_scan_7z(file_obj, expected):
         (io.BytesIO(open("tests/assets/bzip2/danger.tar.bz2", "rb").read()), True),
     ],
 )
-def test_scan_bzip2(file_obj, expected):
-    result = TokenDetector.scan_bz2(file_obj)
+async def test_scan_bzip2(file_obj, expected):
+    result = await TokenDetector.scan_bz2(file_obj)
     assert result == expected
 
 
@@ -108,8 +108,8 @@ def test_scan_bzip2(file_obj, expected):
         (io.BytesIO(open("tests/assets/gzip/danger.tar.gz", "rb").read()), True),
     ],
 )
-def test_scan_gzip(file_obj, expected):
-    result = TokenDetector.scan_gzip(file_obj)
+async def test_scan_gzip(file_obj, expected):
+    result = await TokenDetector.scan_gzip(file_obj)
     assert result == expected
 
 
@@ -120,8 +120,8 @@ def test_scan_gzip(file_obj, expected):
         (io.BytesIO(open("tests/assets/rar/danger.rar", "rb").read()), True),
     ],
 )
-def test_scan_rar(file_obj, expected):
-    result = TokenDetector.scan_rar(file_obj)
+async def test_scan_rar(file_obj, expected):
+    result = await TokenDetector.scan_rar(file_obj)
     assert result == expected
 
 
@@ -132,8 +132,8 @@ def test_scan_rar(file_obj, expected):
         (io.BytesIO(open("tests/assets/tar/danger.tar", "rb").read()), True),
     ],
 )
-def test_scan_tar(file_obj, expected):
-    result = TokenDetector.scan_tar(file_obj)
+async def test_scan_tar(file_obj, expected):
+    result = await TokenDetector.scan_tar(file_obj)
     assert result == expected
 
 
@@ -144,8 +144,8 @@ def test_scan_tar(file_obj, expected):
         (io.BytesIO(open("tests/assets/zip/danger.zip", "rb").read()), True),
     ],
 )
-def test_scan_zip(file_obj, expected):
-    result = TokenDetector.scan_zip(file_obj)
+async def test_scan_zip(file_obj, expected):
+    result = await TokenDetector.scan_zip(file_obj)
     assert result == expected
 
 
@@ -166,6 +166,6 @@ def test_scan_zip(file_obj, expected):
         ("application/x-tar", open("tests/assets/tar/danger.tar", "rb").read(), True),
     ],
 )
-def test_scan_archive(ft, buffer, expected):
-    result = TokenDetector.scan_archive(ft, buffer)
+async def test_scan_archive(ft, buffer, expected):
+    result = await TokenDetector.scan_archive(ft, buffer)
     assert result == expected
