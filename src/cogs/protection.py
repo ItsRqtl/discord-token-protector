@@ -77,7 +77,7 @@ class Protection(BaseCog):
 
         client = self.bot if self.validate_userid else None
 
-        if message.content and TokenDetector.detect(message.content, client):
+        if message.content and await TokenDetector.detect(message.content, client):
             return await self.delete_message(message, locale)
 
         if self.check_attachments:
